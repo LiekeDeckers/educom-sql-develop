@@ -353,10 +353,21 @@ WHERE   products.CategoryID = 5;
 DROP TABLE shippers_duplicate;
 
 --48. LastName, FirstName, Title, Age from the employees table
-DECLARE @Now AS datetime
-SELECT  @Now='2023-04-20'
-        LastName, 
+SELECT  LastName, 
         FirstName,
         Title,
-        (CONVERT(int,CONVERT(char(8),@Now,112))-CONVERT(char(8),BirthDate,112))/10000 AS Age
+        CONCAT(FLOOR(DATEDIFF('2023/04/20', Birthdate) / 365), ' ', 'years') AS Age
 FROM    employees;
+
+--49. CompanyName and total number of orders by customer renamed as number of orders since Decemeber 31, 1994. 
+-- Show number of Orders greater than 10.
+SELECT  customers.CompanyName,
+        COUNT(orders.OrderID) AS numberOfOdersSince1995
+FROM    orders
+JOIN    customers ON customers.CustomerID = orders.CustomerID
+WHERE   orders.OrderDate > '1994-12-31'
+GROUP BY orders.CustomerID;
+
+--50. ProductInfo = ProductName weighs/is QuantityPerUnit and costs $UnitPrice
+SELECT  CONCAT(ProductName, ' ', 'weighs/is ', QuantityPerUnit, ' ', 'and costs $', ROUND(UnitPrice)) AS ProductInfo
+FROM    products;
